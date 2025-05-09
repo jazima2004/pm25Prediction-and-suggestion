@@ -1,3 +1,3 @@
 # pm25Prediction-and-suggestion
 app link
-https://c9e1-34-74-76-224.ngrok-free.app/
+https://pm25prediction-and-suggestion-7rr3c3kdyf7uxepqgjnnvz.streamlit.app/
