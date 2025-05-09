@@ -1,45 +1,8 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
-import time
-
-# Custom CSS for styling
-st.markdown("""
-<style>
-    .main {
-        background-color: #f0f2f6;
-        padding: 20px;
-        border-radius: 10px;
-    }
-    .stButton>button {
-        background-color: #4CAF50;
-        color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-size: 16px;
-    }
-    .stButton>button:hover {
-        background-color: #45a049;
-    }
-    .stNumberInput input {
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        padding: 5px;
-    }
-    .stSlider label {
-        font-weight: bold;
-        color: #333;
-    }
-    .sidebar .sidebar-content {
-        background-color: #e6f3ff;
-        border-radius: 10px;
-        padding: 15px;
-    }
-    .stProgress .st-bo {
-        background-color: #4CAF50;
-    }
-</style>
-""", unsafe_allow_html=True)
+from sklearn.preprocessing import StandardScaler
 
 # Load the scaler and model
 scaler = joblib.load('scaler.joblib')
@@ -48,82 +11,59 @@ model = joblib.load('model.joblib')
 # Function to get health provisions based on PM2.5 level
 def get_health_provisions(pm25):
     if pm25 <= 12:
-        return ("Good", "Air quality is safe. No specific precautions needed. Enjoy outdoor activities!", "#00e676")
+        return ("Good", "Air quality is safe. No specific precautions needed. Enjoy outdoor activities!")
     elif 12.1 <= pm25 <= 35.4:
-        return ("Moderate", "Air quality is acceptable. Sensitive groups (e.g., those with respiratory issues) should reduce prolonged outdoor activities.", "#ffeb3b")
+        return ("Moderate", "Air quality is acceptable. Sensitive groups (e.g., those with respiratory issues) should reduce prolonged outdoor activities.")
     elif 35.5 <= pm25 <= 55.4:
-        return ("Unhealthy for Sensitive Groups", "Sensitive groups (children, elderly, those with respiratory conditions) should avoid strenuous outdoor activities. Others should limit prolonged exposure.", "#ff9800")
+        return ("Unhealthy for Sensitive Groups", "Sensitive groups (children, elderly, those with respiratory conditions) should avoid strenuous outdoor activities. Others should limit prolonged exposure.")
     elif 55.5 <= pm25 <= 150.4:
-        return ("Unhealthy", "Everyone should reduce outdoor activities. Sensitive groups should stay indoors and use air purifiers if possible.", "#f44336")
+        return ("Unhealthy", "Everyone should reduce outdoor activities. Sensitive groups should stay indoors and use air purifiers if possible.")
     elif 150.5 <= pm25 <= 250.4:
-        return ("Very Unhealthy", "Avoid all outdoor activities. Wear N95 masks if going outside, use air purifiers, and keep windows closed.", "#9c27b0")
+        return ("Very Unhealthy", "Avoid all outdoor activities. Wear N95 masks if going outside, use air purifiers, and keep windows closed.")
     else:
-        return ("Hazardous", "Stay indoors, seal windows, use air purifiers, and wear N95 masks if outdoor exposure is unavoidable. High risk for all.", "#3f51b5")
+        return ("Hazardous", "Stay indoors, seal windows, use air purifiers, and wear N95 masks if outdoor exposure is unavoidable. High risk for all.")
 
-# Sidebar content
-with st.sidebar:
-    st.header("About the App")
-    st.markdown("""
-    This app predicts **PM2.5 levels** in Chennai using a machine learning model trained on 2024 air quality data. Enter environmental parameters to get a PM2.5 prediction and tailored **health recommendations**.
-    
-    ### Air Quality Categories
-    - **Good (0–12 µg/m³)**: Safe for all.
-    - **Moderate (12.1–35.4 µg/m³)**: Caution for sensitive groups.
-    - **Unhealthy for Sensitive Groups (35.5–55.4 µg/m³)**: Avoid strenuous activities.
-    - **Unhealthy (55.5–150.4 µg/m³)**: Reduce outdoor exposure.
-    - **Very Unhealthy (150.5–250.4 µg/m³)**: Stay indoors, use N95 masks.
-    - **Hazardous (>250.4 µg/m³)**: High risk, remain indoors.
-    """)
-    st.markdown("Developed by [Your Name] | Powered by Streamlit")
+# Streamlit app
+st.title('PM2.5 Prediction App for Chennai')
+st.write('Enter environmental parameters to predict PM2.5 levels and get health recommendations for agricultural areas in Chennai.')
 
-# Main app content
-st.title('🌬️ Chennai PM2.5 Prediction App')
-st.markdown("**Predict PM2.5 levels and get health recommendations based on air quality and weather data.**")
+# Input fields for selected features
+st.header("Input Parameters")
+col1, col2 = st.columns(2)
 
-# Input form in a container
-with st.container():
-    st.subheader("📏 Enter Environmental Parameters")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        pm10 = st.slider('PM10 (µg/m³)', min_value=0.0, max_value=200.0, value=50.0, step=0.1)
-        no2 = st.slider('NO2 (µg/m³)', min_value=0.0, max_value=100.0, value=15.0, step=0.1)
-        co = st.slider('CO (mg/m³)', min_value=0.0, max_value=10.0, value=1.0, step=0.01)
-        ozone = st.slider('Ozone (µg/m³)', min_value=0.0, max_value=100.0, value=15.0, step=0.1)
-    
-    with col2:
-        at = st.slider('Ambient Temperature (°C)', min_value=0.0, max_value=50.0, value=30.0, step=0.1)
-        rh = st.slider('Relative Humidity (%)', min_value=0.0, max_value=100.0, value=75.0, step=0.1)
-        ws = st.slider('Wind Speed (m/s)', min_value=0.0, max_value=20.0, value=2.0, step=0.1)
-        wd = st.slider('Wind Direction (deg)', min_value=0.0, max_value=360.0, value=180.0, step=1.0)
+with col1:
+    pm10 = st.number_input('PM10 (µg/m³)', min_value=0.0, value=50.0, step=0.1)
+    no2 = st.number_input('NO2 (µg/m³)', min_value=0.0, value=15.0, step=0.1)
+    co = st.number_input('CO (mg/m³)', min_value=0.0, value=1.0, step=0.01)
+    ozone = st.number_input('Ozone (µg/m³)', min_value=0.0, value=15.0, step=0.1)
+
+with col2:
+    at = st.number_input('Ambient Temperature (°C)', min_value=0.0, value=30.0, step=0.1)
+    rh = st.number_input('Relative Humidity (%)', min_value=0.0, max_value=100.0, value=75.0, step=0.1)
+    ws = st.number_input('Wind Speed (m/s)', min_value=0.0, value=2.0, step=0.1)
+    wd = st.number_input('Wind Direction (deg)', min_value=0.0, max_value=360.0, value=180.0, step=1.0)
 
 # Predict button
-if st.button('🔍 Predict PM2.5 Level'):
-    # Progress bar
-    progress_bar = st.progress(0)
-    for i in range(100):
-        time.sleep(0.01)
-        progress_bar.progress(i + 1)
-    
+if st.button('Predict PM2.5'):
     # Create input data array
     input_data = [[pm10, no2, co, ozone, at, rh, ws, wd]]
-    
+
     # Scale the input data
     input_scaled = scaler.transform(input_data)
-    
+
     # Make prediction
     prediction = model.predict(input_scaled)[0]
-    
+
     # Get health provisions
-    category, provisions, color = get_health_provisions(prediction)
-    
-    # Display results in a styled container
-    with st.container():
-        st.markdown(f"### Predicted PM2.5 Level: **{prediction:.2f} µg/m³**")
-        st.markdown(f"#### Air Quality Category: <span style='color:{color};'>{category}</span>", unsafe_allow_html=True)
-        st.markdown(f"**Health Recommendations**: {provisions}")
-        
-        # Visual indicator
-        st.markdown(f"<div style='background-color:{color};height:10px;border-radius:5px;'></div>", unsafe_allow_html=True)
-    
-    progress_bar.empty()
+    category, provisions = get_health_provisions(prediction)
+
+    # Display results
+    st.success(f'Predicted PM2.5 Level: {prediction:.2f} µg/m³')
+    st.subheader(f'Air Quality Category: {category}')
+    st.write(f'**Health Provisions for Agricultural Workers**: {provisions}')
+    st.info('Note: High PM2.5 levels can affect crop health and worker productivity. Consider protective measures for outdoor farming activities.')
+
+# Additional information
+st.sidebar.header("About")
+st.sidebar.write("This app predicts PM2.5 levels in Chennai using a Random Forest model trained on environmental data. It provides health recommendations for agricultural workers based on WHO air quality guidelines.")
+st.sidebar.write("Features used: PM10, NO2, CO, Ozone, Temperature, Humidity, Wind Speed, Wind Direction.")
