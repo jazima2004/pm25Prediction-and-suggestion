@@ -6,7 +6,7 @@ https://pm25prediction-and-suggestion-7rr3c3kdyf7uxepqgjnnvz.streamlit.app/
 
 ---
 
-## **Project Summary: PM2.5 Prediction and Health Recommendations for Agricultural Areas in Chennai**
+## **PM2.5 Prediction and Health Recommendations for Agricultural Areas in Chennai**
 
 ### **About**
 
@@ -62,23 +62,13 @@ This project is a **Streamlit web application** that predicts the **PM2.5 (Parti
      * A **health category** based on WHO standards for air quality.
      * A detailed **health provision** to guide workers on how to adjust their outdoor activity based on air quality.
 
-### **Technology Stack**
+### **Technology Used**
 
 * **Streamlit**: A Python framework used for building the web app, which allows for interactive UI elements like sliders and buttons.
 * **Pandas** and **Numpy**: Libraries used to handle and process the input data.
 * **Joblib**: Used to load pre-trained machine learning models and scalers.
 * **Scikit-learn**: A popular Python library for machine learning that includes tools for preprocessing data and training models. Here, it is used for scaling input data and making predictions with the trained Random Forest model.
 * **Random Forest Model**: A machine learning model used to predict PM2.5 levels based on various environmental factors.
-
-### **Steps to Use the App**
-
-1. **Input the Data**: The user is prompted to enter environmental parameters, such as PM10, NO2, CO, Ozone, temperature, humidity, wind speed, and wind direction.
-
-2. **Predict the PM2.5 Level**: After entering the parameters, the user can click the **"Predict PM2.5"** button. The app processes the data and generates a prediction for PM2.5 levels.
-
-3. **Get Health Recommendations**: Based on the predicted PM2.5 level, the app displays a corresponding **health category** and **recommendations** for workers to follow.
-
-4. **Side Information**: The sidebar provides additional information about the app, including its purpose, features, and details about the machine learning model used.
 
 ### **Health Recommendations Based on PM2.5 Levels**
 
@@ -97,7 +87,7 @@ The app provides health provisions according to the **WHO air quality guidelines
 * **Worker Safety**: By adhering to the health provisions based on PM2.5 levels, workers can avoid respiratory issues and other health complications associated with poor air quality.
 * **Crop Protection**: Poor air quality can have a negative impact on crop health, and this tool helps farmers assess environmental conditions that may affect crop yield and quality.
 
-### **About the Model**
+### **Model Used**
 
 * The **Random Forest model** has been trained on historical environmental data to predict PM2.5 levels based on various air quality parameters.
 * The model takes inputs like **PM10**, **NO2**, **CO**, **Ozone**, **Temperature**, **Humidity**, **Wind Speed**, and **Wind Direction**, and outputs a predicted PM2.5 value.
@@ -111,5 +101,4 @@ This application serves as a valuable tool for predicting PM2.5 levels in **Chen
 
 ---
 
-Let me know if you'd like to add or modify any part of this summary!
 
